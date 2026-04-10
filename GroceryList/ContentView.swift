@@ -6,19 +6,56 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var query: [Item]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                ForEach(query) { item in
+                    Text(item.title)
+                        .font(.title.weight(.light))
+                        .padding(.vertical, 2)
+                        .foregroundStyle(item.isCompleted == false ? Color.primary : Color.accentColor)
+                        .italic(item.isCompleted)
+                        .strikethrough(item.isCompleted)
+                }
+            }
+            .navigationTitle("Grocery List")
         }
         .padding()
+        .overlay {
+            if query.isEmpty {
+                ContentUnavailableView("No Item Added", systemImage: "cart.circle", description: Text("Add items to view in list"))
+            }
+        }
     }
 }
 
-#Preview {
+#Preview("Sample Data") {
+    
+    let sampleData: [Item] = [
+        Item(title: "Milk", isCompleted: true),
+        Item(title: "Bread", isCompleted: false),
+        Item(title: "Eggs", isCompleted: .random()),
+        Item(title: "Tofu", isCompleted: .random()),
+        Item(title: "Curd", isCompleted: .random()),
+    ]
+    
+    var container = try! ModelContainer(for: Item.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    
+    for item in sampleData {
+        container.mainContext.insert(item)
+    }
+    
+    return ContentView()
+        .modelContainer(container)
+}
+
+#Preview("original") {
     ContentView()
+        .modelContainer(for: Item.self, inMemory: true)
 }
