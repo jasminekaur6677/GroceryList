@@ -12,6 +12,14 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var query: [Item]
     
+    func addEssentialItems() {
+        modelContext.insert(Item(title: "Milk", isCompleted: true))
+        modelContext.insert(Item(title: "Bread", isCompleted: false))
+        modelContext.insert(Item(title: "Eggs", isCompleted: .random()))
+        modelContext.insert(Item(title: "Tofu", isCompleted: .random()))
+        modelContext.insert(Item(title: "Curd", isCompleted: .random()))
+    }
+    
     var body: some View {
         NavigationStack {
             List {
@@ -22,14 +30,44 @@ struct ContentView: View {
                         .foregroundStyle(item.isCompleted == false ? Color.primary : Color.accentColor)
                         .italic(item.isCompleted)
                         .strikethrough(item.isCompleted)
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    modelContext.delete(item)
+                                }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                item.isCompleted.toggle()
+                            } label: {
+                                Label("", systemImage: item.isCompleted ? "x.circle" : "checkmark.circle")
+                            }
+                            
+                        }
+                        .tint(item.isCompleted ? .accentColor : .green)
                 }
             }
             .navigationTitle("Grocery List")
-        }
-        .padding()
-        .overlay {
-            if query.isEmpty {
-                ContentUnavailableView("No Item Added", systemImage: "cart.circle", description: Text("Add items to view in list"))
+            .toolbar(content: {
+                if query.isEmpty {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            addEssentialItems()
+                        } label: {
+                            Label("Add", systemImage: "carrot")
+                        }
+                    }
+                }
+            })
+            
+            .padding()
+            .overlay {
+                if query.isEmpty {
+                    ContentUnavailableView("No Item Added", systemImage: "cart.circle", description: Text("Add items to view in list"))
+                }
             }
         }
     }
