@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4A9111232F8A2ACB00B9596B /* Tip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9111222F8A2ACB00B9596B /* Tip.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		4A52FEA02F8967B0002398CC /* GroceryList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceryList.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A9111222F8A2ACB00B9596B /* Tip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tip.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +37,7 @@
 		4A52FE972F8967B0002398CC = {
 			isa = PBXGroup;
 			children = (
+				4A9111222F8A2ACB00B9596B /* Tip.swift */,
 				4A52FEA22F8967B0002398CC /* GroceryList */,
 				4A52FEA12F8967B0002398CC /* Products */,
 			);
@@ -119,6 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A9111232F8A2ACB00B9596B /* Tip.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

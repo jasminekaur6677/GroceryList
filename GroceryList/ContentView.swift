@@ -7,71 +7,121 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var query: [Item]
+    @Query private var items: [Item]
     
-    func addEssentialItems() {
-        modelContext.insert(Item(title: "Milk", isCompleted: true))
-        modelContext.insert(Item(title: "Bread", isCompleted: false))
-        modelContext.insert(Item(title: "Eggs", isCompleted: .random()))
-        modelContext.insert(Item(title: "Tofu", isCompleted: .random()))
-        modelContext.insert(Item(title: "Curd", isCompleted: .random()))
+    @State private var item: String = ""
+    
+    @FocusState private var isFocused: Bool
+    
+    let buttonTip = ButtonTip()
+    
+    func setupTips() {
+      do {
+        try Tips.resetDatastore()
+        Tips.showAllTipsForTesting()
+        try Tips.configure([
+          .displayFrequency(.immediate)
+        ])
+      } catch {
+        print("Error initializing TipKit \(error.localizedDescription)")
+      }
+    }
+    
+    init() {
+      setupTips()
+    }
+    
+    func addEssentialFoods() {
+      modelContext.insert(Item(title: "Bakery &  Bread", isCompleted: false))
+      modelContext.insert(Item(title: "Meat & Seafood", isCompleted: true))
+      modelContext.insert(Item(title: "Cereals", isCompleted: .random()))
+      modelContext.insert(Item(title: "Pasta & Rice", isCompleted: .random()))
+      modelContext.insert(Item(title: "Cheese & Eggs", isCompleted: .random()))
     }
     
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(query) { item in
-                    Text(item.title)
-                        .font(.title.weight(.light))
-                        .padding(.vertical, 2)
-                        .foregroundStyle(item.isCompleted == false ? Color.primary : Color.accentColor)
-                        .italic(item.isCompleted)
-                        .strikethrough(item.isCompleted)
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                withAnimation {
-                                    modelContext.delete(item)
-                                }
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                        .swipeActions(edge: .leading) {
-                            Button {
-                                item.isCompleted.toggle()
-                            } label: {
-                                Label("", systemImage: item.isCompleted ? "x.circle" : "checkmark.circle")
-                            }
-                            
-                        }
-                        .tint(item.isCompleted ? .accentColor : .green)
+      NavigationStack {
+        List {
+          ForEach(items) { item in
+            Text(item.title)
+              .font(.title.weight(.light))
+              .padding(.vertical, 2)
+              .foregroundStyle(item.isCompleted == false ? Color.primary : Color.accentColor)
+              .strikethrough(item.isCompleted)
+              .italic(item.isCompleted)
+              .swipeActions {
+                Button(role: .destructive) {
+                  withAnimation {
+                    modelContext.delete(item)
+                  }
+                } label: {
+                  Label("Delete", systemImage: "trash")
                 }
-            }
-            .navigationTitle("Grocery List")
-            .toolbar(content: {
-                if query.isEmpty {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            addEssentialItems()
-                        } label: {
-                            Label("Add", systemImage: "carrot")
-                        }
-                    }
+              }
+              .swipeActions(edge: .leading) {
+                Button("Done", systemImage: item.isCompleted == false ?  "checkmark.circle" : "x.circle") {
+                  item.isCompleted.toggle()
                 }
-            })
-            
-            .padding()
-            .overlay {
-                if query.isEmpty {
-                    ContentUnavailableView("No Item Added", systemImage: "cart.circle", description: Text("Add items to view in list"))
-                }
-            }
+                .tint(item.isCompleted == false ? .green : .accentColor)
+              }
+          }
         }
+        .navigationTitle("Grocery List")
+        .toolbar {
+          if items.isEmpty {
+            ToolbarItem(placement: .topBarTrailing) {
+              Button {
+                addEssentialFoods()
+              } label: {
+                Image(systemName: "carrot")
+              }
+              .popoverTip(buttonTip)
+            }
+          }
+        }
+        .overlay {
+          if items.isEmpty {
+            ContentUnavailableView("Empty Cart", systemImage: "cart.circle", description: Text("Add some items to the shopping list."))
+          }
+        }
+        .safeAreaInset(edge: .bottom) {
+          VStack(spacing: 12) {
+            TextField("", text: $item)
+              .textFieldStyle(.plain)
+              .padding(12)
+              .background(.tertiary)
+              .cornerRadius(12)
+              .font(.title.weight(.light))
+              .focused($isFocused)
+            
+            Button {
+              guard !item.isEmpty else {
+                return
+              }
+              
+              let newItem = Item(title: item, isCompleted: false)
+              modelContext.insert(newItem)
+              item = ""
+              isFocused = false
+            } label: {
+              Text("Save")
+                .font(.title2.weight(.medium))
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.roundedRectangle)
+            .controlSize(.extraLarge)
+          }
+          .padding()
+          .background(.bar)
+        }
+      }
     }
-}
+  }
 
 #Preview("Sample Data") {
     
