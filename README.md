@@ -1,6 +1,7 @@
 # GroceryList App
 
 This is a **SwiftUI** app designed to help users organize their grocery shopping efficiently. The Grocery List App allows users to create, manage, and track their grocery items in a convenient way. It offers features that enhance the shopping experience by simplifying the process of adding and checking off items as users shop.
+
 **APP PREVIEW :**
 
 <div align="center">
