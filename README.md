@@ -1,7 +1,6 @@
 # GroceryList App
 
-This is a simple **SwiftUI** app utilising Apple's on device **Apple Intelligence** to respond to a predefined prompt. Out of Apple's in-built AI support frameworks - **Foundation model** and **CoreML**, I've used Foundation Models for this app.
-
+This is a **SwiftUI** app designed to help users organize their grocery shopping efficiently. The Grocery List App allows users to create, manage, and track their grocery items in a convenient way. It offers features that enhance the shopping experience by simplifying the process of adding and checking off items as users shop.
 **APP PREVIEW :**
 
 <div align="center">
@@ -14,51 +13,27 @@ This is a simple **SwiftUI** app utilising Apple's on device **Apple Intelligenc
 
 • Language : Swift 6
 
-• Framework: Foundations Model
+• Framework: SwiftData and TipKit
 
  
 ## 🚀 Features
 
-• Checks Apple Intelligence Model availability
+• Item Management: Users can add, remove, and mark items as completed
 
-• Button sends prompt, such as "say hi in a fun way," to the AI model
+• Notification for Empty Lists: Users receive context-sensitive feedback when their grocery list is empty
 
-• Progress View shown until response is fetched
+• Intuitive UI: An organized layout that facilitates easy navigation and interaction
 
-• Responsive user interface to show response from AI model
+• TipKit framework is used to guide users about app's functionality
 
-• At Start, no-content view is shown so that users might not feel something is broken
+• SwiftData is used for data persistence
 
 ## 💡 What I Learned
 
 • Designing using SwiftUI
 
-• AI (Apple Intelligence) Model
+• TipKit Framework - Implemented to help users discover new functionalities within the app
 
-• Foundations Model
-
-## ✏️ Working
-
-It's like API implementation where we send prompt to model, show progress view until data is fetched and then show data we recieve on UI.
-
-• import FoundationModels
-
-• make model object to check availability
-
-    private var largeLanguageModel = SystemLanguageModel.default
-
-• make session object to make requests
-
-    private var session = LanguageModelSession()
-
-• check availability and handle all cases
-
-• Define prompt
-
-• Send response to session
-
-• Handle response
-
-
+• Data Persistence using SwiftData
 
 
